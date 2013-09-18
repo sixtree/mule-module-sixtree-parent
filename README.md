@@ -247,15 +247,34 @@ The commented section can be used to add other pages not usually part of the def
 
 By default, the Maven build creates a `target\update-site` directory. This is unsigned and will generate a warning in Mule Studio on import.
 
-To sign the `update-site` on builds, add the following after all `mvn` commands above:
+To sign the `update-site` on builds, add the following to your `M2_HOME/conf/settings.xml` file:
+
+```xml
+<profiles>
+  ...
+  <profile>
+      <id>sign</id> 
+      <activation>
+          <activeByDefault>false</activeByDefault> 
+      </activation>
+      <properties>
+         <alias>STORE_ALIAS</alias>
+         <keystore.path>/path/to/keystore.ks</keystore.path>
+         <storepass>STORE_PASSWORD</storepass>
+         <keypass>KEY_PASSWORD</keypass>
+      </properties>
+  </profile>
+  ...
+</profiles>
+```
+
+And activate the profile when running the `install` or `deploy` commands:
 
 ```
--Dalias=<alias> -Dkeystore.path="/path/to/keystore" -Dstorepass=<storepass> -Dkeypass=<keypass>
+mvn -Dsign install
 ```
 
-At the moment, this site needs to be manually uploaded to dist.sixtree.com.au.
-
-**Note**: The presence of one of the above properties *or* a file called `keystore.ks` in the root of the project will trigger the signing process. It will fail the build if all the above are not available and correct.
+At the moment, the resulting update site needs to be manually uploaded to dist.sixtree.com.au.
 
 
 Changelog
