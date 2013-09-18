@@ -170,26 +170,68 @@ To build and install locally (to use in a Mule project or to import into Mule St
 mvn install
 ```
 
-To deploy snapshot releases to the Sixtree repo as well:
+To deploy snapshot releases to the Sixtree repo as well (**avoid doing this unless absolutely necessary**):
 
 ```
 mvn install deploy
 ```
 
+## Eclipse Plugin
+
+By default, the Maven build creates a `target\update-site` directory. This is unsigned and will generate a warning in Mule Studio on import.
+
+To sign the `update-site` on builds, add the following to your `M2_HOME/conf/settings.xml` file:
+
+```xml
+<profiles>
+  ...
+  <profile>
+      <id>sign</id> 
+      <activation>
+          <activeByDefault>false</activeByDefault> 
+      </activation>
+      <properties>
+         <alias>STORE_ALIAS</alias>
+         <keystore.path>/path/to/keystore.ks</keystore.path>
+         <storepass>STORE_PASSWORD</storepass>
+         <keypass>KEY_PASSWORD</keypass>
+      </properties>
+  </profile>
+  ...
+</profiles>
+```
+
+And activate the profile when running the `install` or `release:prepare` commands:
+
+```
+mvn -Psign install
+```
+
 ## Release
 
-Releasing to the Sixtree repo is a simple process also:
+**Note**: The following relies on the correct configuration of your git installation to have Github credentials for HTTPS access already configured. This differs between operating systems and is not part of this guide.
+
+Building and releasing to the Sixtree repo is a simple process also:
 
 ```
-mvn release:prepare
-mvn release:perform
+mvn -Psign release:prepare
+mvn -Psign release:perform
 ```
 
-Usually the defaults for release version and next development version are acceptable for fixes (patches). However, remember to always follow the [Semantic Versioning](http://semver.org/) conventions and increment MAJOR and MINOR if appropriate.
+Note sometimes its useful to skip tests on the perform step (if the tests require sensitive information that is not checked in). Just run as follows:
 
-If incrementing the MAJOR version (breaking changes), a new root branch is required on Github called <MAJOR>.x (for example, 2.x).
+```
+mvn -Psign -Darguments="-Dmaven.test.skip=true" release:perform
+```
 
-**Note**: This relies on the correct configuration of your git installation to have Github credentials for HTTPS access already configured. This differs between operating systems and is not part of this guide.
+Usually the defaults for release version and next development version are acceptable for fixes (patches). However, remember to always follow the [Semantic Versioning](http://semver.org/) conventions and increment MAJOR and MINOR if appropriate. If incrementing the MAJOR version (breaking changes), a new root branch is required on Github called <MAJOR>.x (for example, 2.x).
+
+The above results in a newly released Maven artefact in http://dist.sixtree.com.au/releases. However, **the Eclipse update site is not installed**. To install the update site manually, either:
+
+* Get the update-site folder from the target/checkout folder immediately after release, or
+* Download the update site zip from the distribution site release folder (example URL is https://s3-ap-southeast-2.amazonaws.com/dist.sixtree.com.au/releases/au/com/sixtree/mule/mule-module-example/1.0.0/mule-module-example-1.0.0-studio-plugin.zip)
+
+The target location to copy the entire update-site folder is s3://dist.sixtree.com.au/mule/modules/mule-module-example/update-site
 
 ## Documentation
 
@@ -242,39 +284,6 @@ The commented section can be used to add other pages not usually part of the def
 ```
 -markdown userguide ${basedir}/USAGE.md "User Guide"
 ```
-
-## Eclipse Plugin
-
-By default, the Maven build creates a `target\update-site` directory. This is unsigned and will generate a warning in Mule Studio on import.
-
-To sign the `update-site` on builds, add the following to your `M2_HOME/conf/settings.xml` file:
-
-```xml
-<profiles>
-  ...
-  <profile>
-      <id>sign</id> 
-      <activation>
-          <activeByDefault>false</activeByDefault> 
-      </activation>
-      <properties>
-         <alias>STORE_ALIAS</alias>
-         <keystore.path>/path/to/keystore.ks</keystore.path>
-         <storepass>STORE_PASSWORD</storepass>
-         <keypass>KEY_PASSWORD</keypass>
-      </properties>
-  </profile>
-  ...
-</profiles>
-```
-
-And activate the profile when running the `install` or `deploy` commands:
-
-```
-mvn -Dsign install
-```
-
-At the moment, the resulting update site needs to be manually uploaded to dist.sixtree.com.au.
 
 
 Changelog
