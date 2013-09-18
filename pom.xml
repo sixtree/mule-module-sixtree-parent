@@ -1,8 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.com.sixtree.mule</groupId>
 	<artifactId>mule-module-sixtree-parent</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>mule-module-sixtree-parent</name>
 
@@ -11,17 +12,17 @@
 		<artifactId>mule-devkit-parent</artifactId>
 		<version>3.4.0</version>
 	</parent>
-	
+
 	<properties>
 		<licensePath>LICENSE.md</licensePath>
 		<mule.version>3.4.0</mule.version>
 		<devkit.studio.package.skip>false</devkit.studio.package.skip>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<mule.devkit.version>3.4.0</mule.devkit.version>		
+		<mule.devkit.version>3.4.0</mule.devkit.version>
 		<junit.version>4.9</junit.version>
-		<mockito.version>1.8.2</mockito.version>		
-	</properties>	
-	
+		<mockito.version>1.8.2</mockito.version>
+	</properties>
+
 	<distributionManagement>
 		<repository>
 			<id>sixtree-releases</id>
@@ -34,7 +35,7 @@
 			<url>s3://dist.sixtree.com.au/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<scm>
 		<connection>scm:git:https://github.com/sixtree/mule-module-sixtree-parent.git</connection>
 		<developerConnection>scm:git:https://github.com/sixtree/mule-module-sixtree-parent.git</developerConnection>
@@ -77,16 +78,16 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<extensions>
 			<extension>
-			    <groupId>org.kuali.maven.wagons</groupId>
-			    <artifactId>maven-s3-wagon</artifactId>
-			    <version>1.1.22</version>
- 			</extension>
+				<groupId>org.kuali.maven.wagons</groupId>
+				<artifactId>maven-s3-wagon</artifactId>
+				<version>1.1.22</version>
+			</extension>
 		</extensions>
-	
+
 		<plugins>
 			<plugin>
 				<inherited>false</inherited>
@@ -101,31 +102,48 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<pushChanges>true</pushChanges>
+				</configuration>
+				<version>2.1</version>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.7</version>
+			</plugin>			
+
+			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.8</version>
 				<configuration>
 					<excludePackageNames>org.mule.tooling.ui.contribution:*.xsd:*</excludePackageNames>
-		            <additionalparam>
-                        -hdf project.artifactId "${project.artifactId}"
-                        -hdf project.groupId "${project.groupId}"
-                        -hdf project.version "${project.version}"
-                        -hdf project.name "${project.name}"
-                    <!-- release repos are hardcoded because distribution management contains s3:// urls -->
-                        -hdf project.repo.name "Sixtree Repository"
-                        -hdf project.repo.id "sixtree-releases"
-                        -hdf project.repo.url "http://dist.sixtree.com.au/releases/"
-                        -hdf project.snapshotRepo.name "Sixtree Snapshot Repository"
-                        -hdf project.snapshotRepo.id "sixtree-snapshots"
-                        -hdf project.snapshotRepo.url "http://dist.sixtree.com.au/snapshots/"
-                        -d ${project.build.directory}/apidocs
-                    <!-- -markdown userguide ${basedir}/USAGE.md "User Guide"  -->
+					<additionalparam>
+						-hdf project.artifactId "${project.artifactId}"
+						-hdf project.groupId "${project.groupId}"
+						-hdf project.version "${project.version}"
+						-hdf project.name "${project.name}"
+						<!-- release repos are hardcoded because distribution management contains 
+							s3:// urls -->
+						-hdf project.repo.name "Sixtree Repository"
+						-hdf project.repo.id "sixtree-releases"
+						-hdf project.repo.url "http://dist.sixtree.com.au/releases/"
+						-hdf project.snapshotRepo.name "Sixtree Snapshot Repository"
+						-hdf project.snapshotRepo.id "sixtree-snapshots"
+						-hdf project.snapshotRepo.url "http://dist.sixtree.com.au/snapshots/"
+						-d ${project.build.directory}/apidocs
+						<!-- -markdown userguide ${basedir}/USAGE.md "User Guide" -->
 					</additionalparam>
 				</configuration>
 			</plugin>
-			
+
 		</plugins>
 	</build>
-	
+
 	<repositories>
 		<repository>
 			<id>mulesoft-releases</id>
@@ -148,14 +166,14 @@
 			<id>sixtree-snapshots</id>
 			<name>Sixtree Snapshot Repository</name>
 			<url>http://dist.sixtree.com.au/snapshots/</url>
-		</repository>		
+		</repository>
 		<repository>
 			<id>codehaus-releases</id>
 			<name>CodeHaus Releases</name>
 			<url>http://repository.codehaus.org/</url>
 		</repository>
 	</repositories>
-	
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>mulesoft-plugin-releases</id>
@@ -179,6 +197,6 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
-	</pluginRepositories>	
+	</pluginRepositories>
 
 </project>
