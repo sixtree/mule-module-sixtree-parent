@@ -241,13 +241,13 @@ The default `mvn install` command incorrectly generates documentation for Mule M
 mvn javadoc:javadoc
 ```
 
-This can then be released to Github Pages using the following:
+This can then be released to Github Pages (see https://help.github.com/articles/user-organization-and-project-pages#project-pages) using the following:
 
 ```
 mvn -Dgithub.oauth2Token=<token> mule-devkit:github-upload-doc
 ```
 
-The resulting documentation can be found at http://sixtree.github.io/mule-module-example
+The resulting documentation will exist in the gh-pages branch of the repo, and can be accessed as a website at http://sixtree.github.io/mule-module-example
 
 #### Extra Documentation
 
