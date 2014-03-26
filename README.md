@@ -23,6 +23,12 @@ Usage
 
 This POM is intended to support the full development and release lifecycle of public Sixtree Mule Modules.
 
+## Prerequisites
+
+Ensure that your Eclipse has [m2e](https://www.eclipse.org/m2e/) installed (via the Eclipse update site for your eclipse version). This will allow you to use maven from within Eclipse.
+
+Currently it is best to have a 1.6 JDK as your primary compiler in Eclipse.
+
 ## Configure
 
 The following steps are necessary for using the POM to build and release:
